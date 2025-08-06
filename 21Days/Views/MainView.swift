@@ -9,40 +9,41 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var store: HabitStore
-    
+
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("OnGoing Habit")) {
-                    List(store.habits.filter { $0.isDone == false}) { habit in
-                        NavigationLink {
-                            DetailedHabitView()
-                        } label: {
-                            HabitCellView(habit: habit)
+        TabView {
+            NavigationView {
+                Form {
+                    Section(header: Text("OnGoing Habit")) {
+                        List(store.habits.filter { !$0.isDone }) { habit in
+                            NavigationLink {
+                                DetailedHabitView()
+                            } label: {
+                                HabitCellView(habit: habit)
+                            }
+                        }
+                    }
+
+                    Section(header: Text("Completed Habit")) {
+                        List(store.habits.filter { $0.isDone }) { habit in
+                            NavigationLink {
+                                DetailedHabitView()
+                            } label: {
+                                HabitCellView(habit: habit)
+                            }
                         }
                     }
                 }
-                
-                Section(header: Text("Completed Habit")) {
-                    List(store.habits.filter { $0.isDone == true}) { habit in
-                        NavigationLink {
-                            DetailedHabitView()
-                        } label: {
-                            HabitCellView(habit: habit)
-                        }
-                    }
-                }
+                .navigationTitle("My Habits")
             }
-            .navigationTitle("My Habits")
-            .toolbar {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Button { } label: { Image(systemName: "plus")}
-                }
-                
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Button { } label: { Image(systemName: "plus")}
-                }
+            .tabItem {
+                Label("Habits", systemImage: "list.bullet")
             }
+
+            DetailedHabitView()
+                .tabItem {
+                    Label("Other", systemImage: "gearshape")
+                }
         }
     }
 }
