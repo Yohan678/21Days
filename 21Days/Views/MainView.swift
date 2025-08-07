@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @ObservedObject var habit: Habit
     @EnvironmentObject var store: HabitStore
 
     var body: some View {
@@ -17,7 +18,7 @@ struct MainView: View {
                     Section(header: Text("OnGoing Habit")) {
                         List(store.habits.filter { !$0.isDone }) { habit in
                             NavigationLink {
-                                DetailedHabitView()
+                                DetailedHabitView(habit: habit)
                             } label: {
                                 HabitCellView(habit: habit)
                             }
@@ -27,7 +28,7 @@ struct MainView: View {
                     Section(header: Text("Completed Habit")) {
                         List(store.habits.filter { $0.isDone }) { habit in
                             NavigationLink {
-                                DetailedHabitView()
+                                DetailedHabitView(habit: habit)
                             } label: {
                                 HabitCellView(habit: habit)
                             }
@@ -40,7 +41,7 @@ struct MainView: View {
                 Label("Habits", systemImage: "list.bullet")
             }
 
-            DetailedHabitView()
+            DetailedHabitView(habit: habit)
                 .tabItem {
                     Label("Other", systemImage: "gearshape")
                 }
@@ -49,6 +50,6 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    MainView(habit: Habit(title: "Test", isDone: false))
         .environmentObject(HabitStore())
 }

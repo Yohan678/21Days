@@ -14,7 +14,7 @@ struct _1DaysApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            MainView(habit: Habit(title: "Test", isDone: false))
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(habitStore)
         }
