@@ -13,6 +13,7 @@ class Habit: Identifiable, ObservableObject {
     @Published var title: String
     @Published var isDone: Bool
     let startDate: Date
+    @Published var days: [Int] = []
     
     init(title: String, isDone: Bool, startDate: Date = Date.now) {
         id = UUID()
@@ -21,4 +22,7 @@ class Habit: Identifiable, ObservableObject {
         self.startDate = startDate
     }
     
+    func completeDay() {
+        days.append(days.count + 1)
+    }
 }
