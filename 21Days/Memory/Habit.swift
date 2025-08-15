@@ -12,17 +12,23 @@ class Habit: Identifiable, ObservableObject {
     var id: UUID
     @Published var title: String
     @Published var isDone: Bool
-    let startDate: Date
-    @Published var days: [Int] = []
+    var startDate: Date
+    @Published var days: Int
+    @Published var completeTime: Date
     
-    init(title: String, isDone: Bool, startDate: Date = Date.now) {
+    init(title: String, isDone: Bool, startDate: Date = Date.now, completeTime: Date = Date.now, days: Int = 0) {
         id = UUID()
         self.title = title
         self.isDone = isDone
         self.startDate = startDate
+        self.completeTime = completeTime
+        self.days = days
     }
     
     func completeDay() {
-        days.append(days.count + 1)
+        days += 1
+        if days == 21 {
+            isDone = true
+        }
     }
 }

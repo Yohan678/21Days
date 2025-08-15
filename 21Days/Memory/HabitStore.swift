@@ -13,8 +13,8 @@ class HabitStore: ObservableObject {
     init() {
         habits = [
             Habit(title: "Running", isDone: false, startDate: Date.now),
-            Habit(title: "Reading", isDone: true, startDate: Date.now.addingTimeInterval(3600 * -24 * 21)),
-            Habit(title: "Working Out", isDone: true, startDate: Date.now.addingTimeInterval(3600 * -24 * 42))
+            Habit(title: "Reading", isDone: true, startDate: Date.now.addingTimeInterval(3600 * -24 * 21), days: 21),
+            Habit(title: "Working Out", isDone: true, startDate: Date.now.addingTimeInterval(3600 * -24 * 42), days: 21)
         ]
     }
     

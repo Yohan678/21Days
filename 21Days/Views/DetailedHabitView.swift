@@ -11,19 +11,19 @@ struct DetailedHabitView: View {
     @ObservedObject var habit: Habit
     @EnvironmentObject var store: HabitStore
     
+    @State private var doneButtonDisabled = false
+    @State private var remainingTime = 0
+    
+    //cool down for Done Button
+    let cooldownSeconds = 30
+    let lastPressedKey = "lastPressedTime"
+    
     var body: some View {
         NavigationView {
             VStack {
                 Text("Started : \(habit.startDate, style: .date)")
                     .navigationTitle(habit.title)
                     .navigationBarTitleDisplayMode(.inline)
-                
-                
-                Button {
-                    habit.completeDay()
-                } label: {
-                    Text("Done")
-                }
                 
                 if #available(iOS 16.0, *) {
                     Grid(horizontalSpacing: 10, verticalSpacing: 10) {
@@ -32,7 +32,7 @@ struct DetailedHabitView: View {
                                 ForEach(0..<7) { col in
                                     let boxIndex = row * 7 + col
                                     
-                                    let isBoxFilled = boxIndex < habit.days.count
+                                    let isBoxFilled = boxIndex < habit.days
                                     
                                     HabitBoxView(boxIndex: boxIndex, isFilled: isBoxFilled)
                                 }
@@ -42,6 +42,71 @@ struct DetailedHabitView: View {
                 } else {
                     Text("It is available devices with iOS 16 or more")
                 }
+                
+                HStack {
+                    Button {
+                        habit.completeDay()
+                        startCooldown()
+                    } label: {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.blue)
+                            .frame(width: 100, height: 50)
+                            .overlay(
+                                Text(doneButtonDisabled ? "Wait \(remainingTime)s" : "DONE")
+                                    .foregroundColor(.white)
+                                    .bold()
+                            )
+                    }
+                    .padding()
+                    .disabled(doneButtonDisabled)
+                    
+                    Button { remainingTime = 0 } label: {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.blue)
+                            .frame(width: 100, height: 50)
+                            .overlay(
+                                Text("RESET")
+                                    .foregroundColor(.white)
+                                    .bold()
+                            )
+                            
+                    } //for testing
+                }
+                
+                
+            }
+        }
+    }
+    
+    private func startCooldown() {
+        let now = Date()
+        UserDefaults.standard.set(now, forKey: lastPressedKey)
+        checkCooldown()
+    }
+    
+    private func checkCooldown() {
+        if let lastPressed = UserDefaults.standard.object(forKey: lastPressedKey) as? Date {
+            let elapsed = Int(Date().timeIntervalSince(lastPressed))
+            let remaining = cooldownSeconds - elapsed
+            
+            if remaining > 0 {
+                doneButtonDisabled = true
+                remainingTime = remaining
+                startCountdown()
+            } else {
+                doneButtonDisabled = false
+                remainingTime = 0
+            }
+        }
+    }
+    
+    private func startCountdown() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            if remainingTime > 0 {
+                remainingTime -= 1
+            } else {
+                doneButtonDisabled = false
+                timer.invalidate()
             }
         }
     }
