@@ -16,6 +16,15 @@ final class Habit {
     var startDate: Date
     var days: Int
     var completeTime: Date
+    var streak: Int = 0
+    
+    var progress: Double {
+        Double(days) / 21
+    }
+    
+    var percentText: String {
+        progress.formatted(.percent.precision(.fractionLength(2)))
+    }
     
     init(title: String, isDone: Bool, startDate: Date = Date.now, completeTime: Date = Date.now, days: Int = 0) {
         self.title = title
@@ -26,19 +35,22 @@ final class Habit {
     }
     
     func completeDay() {
+        let now = Date.now
+        checkStreak(now: now)
+        completeTime = now
         days += 1
         if days == 21 {
             isDone = true
         }
     }
     
-    var progress: Double {
-        Double(days) / 21
+    func checkStreak(now: Date) {
+        let elapsed = now.timeIntervalSince(completeTime)
+        
+        if elapsed >= 24 * 3600 && elapsed <= 48 * 3600 {
+            streak += 1
+        } else if elapsed >= 48 * 3600 {
+            streak = 0
+        }
     }
-    
-    var percentText: String {
-        progress.formatted(.percent.precision(.fractionLength(2)))
-    }
-    
-
 }

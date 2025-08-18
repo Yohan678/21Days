@@ -49,6 +49,8 @@ struct DetailedHabitView: View {
                 ProgressView(value: habit.progress)
                     .padding()
                 
+                //Daily Streak Logic
+                
                 if #available(iOS 16.0, *) {
                     Grid(horizontalSpacing: 10, verticalSpacing: 10) {
                         ForEach(0..<3) { row in
