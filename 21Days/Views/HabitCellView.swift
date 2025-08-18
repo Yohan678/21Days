@@ -6,17 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HabitCellView: View {
-    @ObservedObject var habit: Habit
+    @Environment(\.modelContext) private var modelContext
+
+    var habit: Habit
     
-    private var progress: Double {
-        Double(habit.days) / 21
-    }
-    
-    private var percentText: String {
-        progress.formatted(.percent.precision(.fractionLength(2)))
-    }
+
     var body: some View {
         HStack {
             Image(systemName: habit.isDone ? "checkmark.circle.fill" : "checkmark.circle")
@@ -29,8 +26,8 @@ struct HabitCellView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                ProgressView(value: progress)
-                Text("\(percentText) completed")
+                ProgressView(value: habit.progress)
+                Text("\(habit.percentText) completed")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -41,4 +38,5 @@ struct HabitCellView: View {
 
 #Preview {
     HabitCellView(habit: Habit(title: "Title", isDone: true, startDate: Date.now))
+        .modelContainer(for: Habit.self, inMemory: true)
 }

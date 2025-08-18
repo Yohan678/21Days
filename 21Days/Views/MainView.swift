@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainView: View {
-    @ObservedObject var habit: Habit
-    @EnvironmentObject var store: HabitStore
+//    @ObservedObject var habit: Habit
+//    @EnvironmentObject var store: HabitStore
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Habit.startDate, order: .reverse) private var habits: [Habit]
+    
+    var habit: Habit
     
     var body: some View {
         ZStack {
@@ -17,7 +22,7 @@ struct MainView: View {
                 NavigationView {
                     Form {
                         Section(header: Text("OnGoing Habit").font(.caption)) {
-                            List(store.habits.filter { !$0.isDone }) { habit in
+                            List(habits.filter { !$0.isDone }) { habit in
                                 NavigationLink {
                                     DetailedHabitView(habit: habit)
                                 } label: {
@@ -27,7 +32,7 @@ struct MainView: View {
                         }
                         
                         Section(header: Text("Completed Habit")) {
-                            List(store.habits.filter { $0.isDone }) { habit in
+                            List(habits.filter { $0.isDone }) { habit in
                                 NavigationLink {
                                     DetailedHabitView(habit: habit)
                                 } label: {
@@ -47,17 +52,12 @@ struct MainView: View {
                     .tabItem {
                         Label("New", systemImage: "plus")
                     }
-                
-                DetailedHabitView(habit: habit)
-                    .tabItem {
-                        Label("Other", systemImage: "gearshape")
-                    }
             }
         }
     }
 }
 
 #Preview {
-    MainView(habit: Habit(title: "Test", isDone: false))
-        .environmentObject(HabitStore())
+    MainView(habit: Habit(title: "Dummy Title", isDone: false))
+        .modelContainer(for: Habit.self, inMemory: true)
 }

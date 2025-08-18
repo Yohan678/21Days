@@ -6,18 +6,18 @@
 //
 
 import Foundation
-import SwiftUI
+//import SwiftUI
+import SwiftData
 
-class Habit: Identifiable, ObservableObject {
-    var id: UUID
-    @Published var title: String
-    @Published var isDone: Bool
+@Model
+final class Habit {
+    var title: String
+    var isDone: Bool
     var startDate: Date
-    @Published var days: Int
-    @Published var completeTime: Date
+    var days: Int
+    var completeTime: Date
     
     init(title: String, isDone: Bool, startDate: Date = Date.now, completeTime: Date = Date.now, days: Int = 0) {
-        id = UUID()
         self.title = title
         self.isDone = isDone
         self.startDate = startDate
@@ -31,4 +31,14 @@ class Habit: Identifiable, ObservableObject {
             isDone = true
         }
     }
+    
+    var progress: Double {
+        Double(days) / 21
+    }
+    
+    var percentText: String {
+        progress.formatted(.percent.precision(.fractionLength(2)))
+    }
+    
+
 }

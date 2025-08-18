@@ -21,8 +21,6 @@ struct HabitBoxView: View {
                     .font(.caption)
                     .foregroundColor(isFilled ? .white : .black)
             )
-        
-        
     }
 }
 

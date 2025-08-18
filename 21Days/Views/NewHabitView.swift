@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewHabitView: View {
-    @EnvironmentObject var store: HabitStore
+//    @EnvironmentObject var store: HabitStore
+    @Environment(\.modelContext) private var modelContext
+    
     
     @State var title: String = ""
     @FocusState private var isFocused: Bool
@@ -21,6 +24,7 @@ struct NewHabitView: View {
     var body: some View {
         NavigationView {
             VStack {
+                Divider()
                 
                 //Habit Name
                 HStack {
@@ -102,8 +106,8 @@ struct NewHabitView: View {
                 Button {
                     //new habit adding logic
                     if !title.isEmpty {
-                        store.insertNewHabit(title: title, startDate: Date.now)
-                        title = ""
+                        let newHabit = Habit(title: title, isDone: false, startDate: Date.now)
+                        modelContext.insert(newHabit)
                     }
                 } label: {
                     Text("Add Habit")
@@ -123,5 +127,5 @@ struct NewHabitView: View {
 
 #Preview {
     NewHabitView()
-        .environmentObject(HabitStore())
+        .modelContainer(for: Habit.self, inMemory: true)
 }

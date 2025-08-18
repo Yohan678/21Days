@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DetailedHabitView: View {
-    @ObservedObject var habit: Habit
-    @EnvironmentObject var store: HabitStore
+//    @ObservedObject var habit: Habit
+//    @EnvironmentObject var store: HabitStore
+    
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
+    
+    var habit: Habit
     
     @State private var doneButtonDisabled = false
     @State private var remainingTime = 0
@@ -18,12 +24,30 @@ struct DetailedHabitView: View {
     let cooldownSeconds = 30
     let lastPressedKey = "lastPressedTime"
     
+    
     var body: some View {
         NavigationView {
             VStack {
-                Text("Started : \(habit.startDate, style: .date)")
+                
+                let completeDate = habit.startDate.addingTimeInterval(3600 * 24 * 21)
+                
+                Text("\(habit.startDate, style: .date) ~ \(completeDate, style: .date)")
+                    .bold()
                     .navigationTitle(habit.title)
                     .navigationBarTitleDisplayMode(.inline)
+                
+                Spacer()
+
+                Text("Progress & Streaks")
+                    .padding()
+                    .font(.title)
+                    .bold()
+                
+                Text("\(habit.percentText)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                ProgressView(value: habit.progress)
+                    .padding()
                 
                 if #available(iOS 16.0, *) {
                     Grid(horizontalSpacing: 10, verticalSpacing: 10) {
@@ -43,23 +67,37 @@ struct DetailedHabitView: View {
                     Text("It is available devices with iOS 16 or more")
                 }
                 
+                
+                
+                
+                Spacer()
+                
                 HStack {
-                    Button {
-                        habit.completeDay()
-                        startCooldown()
-                    } label: {
-                        RoundedRectangle(cornerRadius: 5)
-                            .fill(.blue)
-                            .frame(width: 100, height: 50)
-                            .overlay(
-                                Text(doneButtonDisabled ? "Wait \(remainingTime)s" : "DONE")
-                                    .foregroundColor(.white)
-                                    .bold()
-                            )
+                    VStack {
+                        if doneButtonDisabled {
+                            Text("Time Left: \(remainingTime)")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Button {
+                            habit.completeDay()
+                            startCooldown()
+                        } label: {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(.blue)
+                                .frame(width: 100, height: 50)
+                                .overlay(
+                                    Text(doneButtonDisabled ? "Wait \(remainingTime)s" : "DONE")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                )
+                        }
+                        .padding()
+                        .disabled(doneButtonDisabled)
                     }
-                    .padding()
-                    .disabled(doneButtonDisabled)
                     
+                    //for testing!
                     Button { remainingTime = 0 } label: {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(.blue)
@@ -69,11 +107,17 @@ struct DetailedHabitView: View {
                                     .foregroundColor(.white)
                                     .bold()
                             )
-                            
-                    } //for testing
+                        
+                    }
                 }
-                
-                
+            }
+        }
+        .onAppear {
+            checkCooldown()
+        }
+        .onChange(of: scenePhase) {
+            if scenePhase == .active {
+                checkCooldown()
             }
         }
     }
@@ -114,5 +158,5 @@ struct DetailedHabitView: View {
 
 #Preview {
     DetailedHabitView(habit: Habit(title: "Dummy Title", isDone: false))
-        .environmentObject(HabitStore())
+        .modelContainer(for: Habit.self, inMemory: true)
 }

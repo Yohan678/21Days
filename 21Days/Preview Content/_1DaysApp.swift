@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct _1DaysApp: App {
@@ -14,9 +15,8 @@ struct _1DaysApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView(habit: Habit(title: "Test", isDone: false))
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(habitStore)
+            MainView(habit: Habit(title: "Dummy Title", isDone: false))
         }
+        .modelContainer(for: Habit.self)
     }
 }
