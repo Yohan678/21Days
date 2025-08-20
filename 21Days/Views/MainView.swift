@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 struct MainView: View {
 //    @ObservedObject var habit: Habit
@@ -52,6 +53,16 @@ struct MainView: View {
                     .tabItem {
                         Label("New", systemImage: "plus")
                     }
+            }
+        }
+        .onAppear {
+            //asking for permission for notification
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                if success {
+                    print("Alert Permission given")
+                } else if let error {
+                    print(error.localizedDescription)
+                }
             }
         }
     }
