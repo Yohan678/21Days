@@ -47,10 +47,14 @@ final class Habit {
     func checkStreak(now: Date) {
         let elapsed = now.timeIntervalSince(completeTime)
         
-        if elapsed >= 24 * 3600 && elapsed <= 48 * 3600 {
+        //for testing: elapsed >= 10 && elapsed <= 60
+        //for actual: elapsed >= 24 * 3600 && elapsed <= 48 * 3600
+        if elapsed >= 10 && elapsed <= 60 {
             streak += 1
-        } else if elapsed >= 48 * 3600 {
-            streak = 0
+        } else if elapsed >= 60 { //for testing: elapsed >= 60, for actual: elapsed >= 48 * 3600
+            streak = 1
+        } else {
+            streak = streak
         }
     }
 }

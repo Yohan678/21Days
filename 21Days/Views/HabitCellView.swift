@@ -26,7 +26,8 @@ struct HabitCellView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                ProgressView(value: habit.progress)
+                MyProgressView(habit: habit)
+                
                 Text("\(habit.percentText) completed")
                     .font(.caption)
                     .foregroundColor(.secondary)

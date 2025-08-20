@@ -108,6 +108,7 @@ struct NewHabitView: View {
                     if !title.isEmpty {
                         let newHabit = Habit(title: title, isDone: false, startDate: Date.now)
                         modelContext.insert(newHabit)
+                        title = ""
                     }
                 } label: {
                     Text("Add Habit")

@@ -13,9 +13,6 @@ struct HabitGridView: View {
     
     var body: some View {
         
-        let row = 3
-        let col = 7
-        
         Grid(horizontalSpacing: 10, verticalSpacing: 10) {
             ForEach(0..<3) { row in
                 GridRow {

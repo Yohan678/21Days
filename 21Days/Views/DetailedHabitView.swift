@@ -17,6 +17,7 @@ struct DetailedHabitView: View {
     
     var habit: Habit
 
+    let progressViewTotal: Double = 100.00
     var body: some View {
         NavigationView {
             VStack {
@@ -39,7 +40,7 @@ struct DetailedHabitView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                ProgressView(value: habit.progress)
+                MyProgressView(habit: habit)
                     .padding()
                 
                 
@@ -55,16 +56,22 @@ struct DetailedHabitView: View {
                     .font(.title)
                     .bold()
                 
-                HStack {
-                    Text("\(habit.streak)")
-                        .font(.title)
-                    Text("days")
-                }
+                VStack {
+                    Text(habit.streak > 1 ? "🔥" : "😉")
+                    HStack {
+                        Text("\(habit.streak)")
+                            .font(.title)
+                        Text("days")
+                    }
+}
                     
                 
                 Spacer()
                 
-                DoneButtonView(habit: habit)
+                if !habit.isDone {
+                    DoneButtonView(habit: habit)
+                }
+                
             }
         }
         .onAppear {
