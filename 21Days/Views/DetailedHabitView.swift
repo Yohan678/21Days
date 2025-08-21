@@ -14,10 +14,12 @@ struct DetailedHabitView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var TM = TimerManager()
     
     var habit: Habit
 
     let progressViewTotal: Double = 100.00
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -75,11 +77,11 @@ struct DetailedHabitView: View {
             }
         }
         .onAppear {
-            DoneButtonView(habit: habit).checkCooldown()
+            TM.restoreTimer()
         }
         .onChange(of: scenePhase) {
             if scenePhase == .active {
-                DoneButtonView(habit: habit).checkCooldown()
+                TM.restoreTimer()
             }
         }
     }

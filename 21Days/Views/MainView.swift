@@ -17,6 +17,8 @@ struct MainView: View {
     
     var habit: Habit
     
+    @StateObject var TM = TimerManager()
+    
     var body: some View {
         ZStack {
             TabView {
@@ -63,6 +65,29 @@ struct MainView: View {
                 } else if let error {
                     print(error.localizedDescription)
                 }
+            }
+            
+            TM.restoreTimer()
+        }
+    }
+    
+    func scheduleNotfication(title: String, body: String, after seconds: TimeInterval) {
+        
+        //notification contents
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = UNNotificationSound.default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Notification request failed: \(error.localizedDescription)")
+            } else {
+                print("Notification scheduled successfully")
             }
         }
     }

@@ -13,25 +13,22 @@ struct DoneButtonView: View {
     
     var habit: Habit
     
-    @State private var doneButtonDisabled: Bool = false
-    @State private var remainingTime: Int = 0
     
-    //cool down for Done Button
-    let cooldownSeconds = 30
-    let lastPressedKey = "lastPressedKey"
+    @StateObject private var TM = TimerManager()
     
     var body: some View {
         HStack {
             VStack {
-                if doneButtonDisabled {
-                    Text("Time Left: \(remainingTime)")
+                if TM.doneButtonDisabled {
+                    Text("Time Left: \(TM.remainingSeconds)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
                 
                 Button {
                     habit.completeDay()
-                    startCooldown()
+                    TM.startCooldown(seconds: 20) // testing seconds: 20
+                    MainView(habit: habit).scheduleNotfication(title: "Testing Notification Title", body: "Testing Notification Body", after: Double(20))
                 } label: {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(.blue)
@@ -43,11 +40,14 @@ struct DoneButtonView: View {
                         )
                 }
                 .padding()
-                .disabled(doneButtonDisabled)
+                .disabled(TM.doneButtonDisabled)
             }
             
             //for testing!
-            Button { remainingTime = 0 } label: {
+            Button {
+                TM.remainingSeconds = 0
+                TM.stopTimer()
+            } label: {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(.blue)
                     .frame(width: 100, height: 50)
@@ -57,39 +57,6 @@ struct DoneButtonView: View {
                             .bold()
                     )
                 
-            }
-        }
-    }
-    
-    func startCooldown() {
-        let now = Date()
-        UserDefaults.standard.set(now, forKey: lastPressedKey)
-        checkCooldown()
-    }
-    
-    func checkCooldown() {
-        if let lastPressed = UserDefaults.standard.object(forKey: lastPressedKey) as? Date {
-            let elapsed = Int(Date().timeIntervalSince(lastPressed))
-            let remaining = cooldownSeconds - elapsed
-            
-            if remaining > 0 {
-                doneButtonDisabled = true
-                remainingTime = remaining
-                startCountdown()
-            } else {
-                doneButtonDisabled = false
-                remainingTime = 0
-            }
-        }
-    }
-    
-    func startCountdown() {
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            if remainingTime > 0 {
-                remainingTime -= 1
-            } else {
-                doneButtonDisabled = false
-                timer.invalidate()
             }
         }
     }
