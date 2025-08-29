@@ -58,7 +58,7 @@ struct DetailedHabitView: View {
                 Spacer()
                 
                 if !habit.isDone {
-                    DoneButtonView(habit: habit)
+                    DoneButtonView( habit: habit)
                 }
                 
             }

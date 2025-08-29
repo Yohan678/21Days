@@ -10,14 +10,36 @@ import SwiftData
 
 @Model
 final class StreakManager {
-    var comepleteTime: Date?
-    var streak: Int
+    var lastCompleteTime: Date?
+    var currentStreak: Int
+    var bestStreak: Int
     
-    init(completeTime: Date? = nil, streak: Int) {
-        self.comepleteTime = completeTime
-        self.streak = streak
+    init() {
+        self.currentStreak = 0
+        self.bestStreak = 0
     }
     
-    
-    
+    func checkStreak() {
+        let today = Calendar.current.startOfDay(for: Date())
+        
+        if let last = lastCompleteTime {
+            let lastDay = Calendar.current.startOfDay(for: last)
+            
+            if let diff = Calendar.current.dateComponents([.day], from: lastDay, to: today).day {
+                if diff == 1 {
+                    currentStreak += 1
+                } else if diff == 0 {
+                    return
+                } else {
+                    currentStreak = 1
+                }
+            }
+        } else {
+            currentStreak = 1
+        }
+        
+        bestStreak = max(bestStreak, currentStreak)
+        
+        lastCompleteTime = today
+    }
 }

@@ -29,6 +29,7 @@ struct DoneButtonView: View {
                 
                 Button {
                     habit.completeDay()
+//                    habit.streakManager.checkStreak()
                     startTimer()
                 } label: {
                     RoundedRectangle(cornerRadius: 5)

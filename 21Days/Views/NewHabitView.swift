@@ -68,7 +68,11 @@ struct NewHabitView: View {
                     //new habit adding logic
                     if !title.isEmpty {
                         let newHabit = Habit(title: title, isDone: false, startDate: Date.now)
+                        let streakManager = StreakManager()
+                        newHabit.streakManager = streakManager
                         modelContext.insert(newHabit)
+                        modelContext.insert(streakManager)
+                        
                         title = ""
                     }
                 } label: {
