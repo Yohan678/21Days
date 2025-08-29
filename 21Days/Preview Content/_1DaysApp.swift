@@ -17,6 +17,6 @@ struct _1DaysApp: App {
         WindowGroup {
             MainView(habit: Habit(title: "Dummy Title", isDone: false))
         }
-        .modelContainer(for: Habit.self)
+        .modelContainer(for: [Habit.self, TimerManager.self])
     }
 }

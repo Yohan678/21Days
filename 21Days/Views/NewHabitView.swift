@@ -26,6 +26,9 @@ struct NewHabitView: View {
             VStack {
                 Divider()
                 
+                Text("Date: \(Date.now, style: .date)")
+                    .padding()
+                
                 //Habit Name
                 HStack {
                     Text("Habit Name")
@@ -40,7 +43,7 @@ struct NewHabitView: View {
                     .padding()
                     .overlay(
                         RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.black, lineWidth: 2)
+                            .stroke(Color.black, lineWidth: 1)
                     )
                     .padding()
                     .focused($isFocused)
@@ -57,48 +60,6 @@ struct NewHabitView: View {
                     .padding()
                 }
                 
-                Divider()
-                 
-                //Starting and Ending Dates
-                HStack {
-                    Text("Starting / Completing Dates")
-                        .font(.title2)
-                        .bold()
-                        .padding()
-                    Spacer()
-                }
-                
-                //Showing Date.now and 21 days after Date.now
-                HStack(spacing: 20) {
-                    VStack {
-                        Text(Date.now, format: dateStyle)
-                        Text(Date.now, format: .dateTime.weekday())
-                    }
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.black, lineWidth: 2)
-                    )
-                    
-                    VStack {
-                        Text("21 Days")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        Text("~")
-                            .font(.title)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    VStack {
-                        Text(Date.now.addingTimeInterval(3600 * 24 * 21), format: dateStyle)
-                        Text(Date.now.addingTimeInterval(3600 * 24 * 21), format: .dateTime.weekday())
-                    }
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.black, lineWidth: 2)
-                    )
-                }
                 
                 
                 Spacer()

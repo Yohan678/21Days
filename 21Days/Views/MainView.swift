@@ -17,8 +17,6 @@ struct MainView: View {
     
     var habit: Habit
     
-    @StateObject var TM = TimerManager()
-    
     var body: some View {
         ZStack {
             TabView {
@@ -56,6 +54,7 @@ struct MainView: View {
                         Label("New", systemImage: "plus")
                     }
             }
+            
         }
         .onAppear {
             //asking for permission for notification
@@ -67,7 +66,7 @@ struct MainView: View {
                 }
             }
             
-            TM.restoreTimer()
+            //Load Timer?
         }
     }
     

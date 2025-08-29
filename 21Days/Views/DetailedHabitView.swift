@@ -14,7 +14,6 @@ struct DetailedHabitView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var TM = TimerManager()
     
     var habit: Habit
 
@@ -27,6 +26,7 @@ struct DetailedHabitView: View {
                 let completeDate = habit.startDate.addingTimeInterval(3600 * 24 * 21)
                 
                 Text("\(habit.startDate, style: .date) ~ \(completeDate, style: .date)")
+                    .foregroundColor(.secondary)
                     .bold()
                     .navigationTitle(habit.title)
                     .navigationBarTitleDisplayMode(.inline)
@@ -53,19 +53,6 @@ struct DetailedHabitView: View {
                 }
                 
                 
-                Text("Streaks")
-                    .padding()
-                    .font(.title)
-                    .bold()
-                
-                VStack {
-                    Text(habit.streak > 1 ? "🔥" : "😉")
-                    HStack {
-                        Text("\(habit.streak)")
-                            .font(.title)
-                        Text("days")
-                    }
-}
                     
                 
                 Spacer()
@@ -77,17 +64,12 @@ struct DetailedHabitView: View {
             }
         }
         .onAppear {
-            TM.restoreTimer()
-        }
-        .onChange(of: scenePhase) {
-            if scenePhase == .active {
-                TM.restoreTimer()
-            }
+            //Load Timer?
         }
     }
 }
 
 #Preview {
     DetailedHabitView(habit: Habit(title: "Dummy Title", isDone: false))
-        .modelContainer(for: Habit.self, inMemory: true)
+        .modelContainer(for: [Habit.self, TimerManager.self], inMemory: true)
 }
